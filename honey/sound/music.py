@@ -7,17 +7,15 @@ from .song_queue import *
 
 print("Importing music")
 
-class Music(commands.Cog):
+class Music():
     def __init__(self, bot):
         self.bot = bot 
-        # self.song_list = {}
         self.song_lock = asyncio.Lock()
         self.song_queue = Queue(bot)
 
 
     #Join: Joins the voice channel
-    @commands.command()
-    async def join(self, ctx, *, channel: discord.VoiceChannel):
+    async def join(self, ctx, channel: discord.VoiceChannel):
         if ctx.voice_client is not None:
             return await ctx.voice_client.move_to(channel)
         
@@ -26,7 +24,6 @@ class Music(commands.Cog):
 
     #check_queue: Continously plays songs until the music queue is empty
     async def check_queue(self, ctx):
-        print("check queue...")
         player = await self.song_queue.next_song(ctx)
         if player is not None:
             ctx.voice_client.play(player, after=lambda _: asyncio.run_coroutine_threadsafe(self.check_queue(ctx), self.bot.loop))
@@ -40,7 +37,6 @@ class Music(commands.Cog):
 
 
     #clear: clears the song queue
-    @commands.command()
     async def clear(self, ctx):
         await self.song_queue.clear(ctx)
         embed = discord.Embed(title='Song Queue', description='Song queue cleared.')
@@ -48,22 +44,19 @@ class Music(commands.Cog):
 
 
     #show: Shows all the songs in the queue
-    @commands.command()
     async def show(self, ctx):
         message = await self.song_queue.show(ctx)
         await ctx.send(embed=message)
 
 
     #queue: Adds a given song to the song queue    
-    @commands.command()
-    async def queue(self, ctx, *, url):
+    async def queue(self, ctx, url):
         await self.queue_song(ctx, url)
 
 
     #play: If no song is currently playing, plays the given song. If a song
     #is already playing, then it will queue the given song
-    @commands.command()
-    async def play(self, ctx, *, url):
+    async def play(self, ctx, url):
         '''Possibly better to just insert in queue then run loop,
         rather than use a lock?'''
         with await self.song_lock:
@@ -78,7 +71,6 @@ class Music(commands.Cog):
 
 
     #volume: Adjust the volume via chat message
-    @commands.command()
     async def volume(self, ctx, volume: int):
         if ctx.voice_client is None:
             return await ctx.send("Not connected to a voice channel.")
@@ -87,23 +79,11 @@ class Music(commands.Cog):
         await ctx.send("Changed volume to {}%".format(volume))
 
 
-    #Stop: Clears the song queue and disconnects from the voice channel
-    @commands.command()
+    #Stop: Clears the song queue 
     async def stop(self, ctx):
         await self.song_queue.clear(ctx)
-        await ctx.voice_client.disconnect()
 
 
-    #ensure_voice: Decorator for the 'play' command
-    #If the command author is in a voice channel, then we join it
-    @play.before_invoke
-    async def ensure_voice(self, ctx):
-        if ctx.voice_client is None:
-            if ctx.author.voice:
-                await ctx.author.voice.channel.connect()
-            else:
-                await ctx.send("You are not connected to a voice channel.")
-                raise commands.CommandError("Author not connected to a voice channel.")
                 
 
 

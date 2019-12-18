@@ -50,17 +50,22 @@ class VoiceState:
         Indicates if the user is currently muted by their own accord.
     self_deaf: :class:`bool`
         Indicates if the user is currently deafened by their own accord.
+    self_stream: :class:`bool`
+        Indicates if the user is currently streaming via 'Go Live' feature.
+
+        .. versionadded:: 1.3.0 
+
     self_video: :class:`bool`
         Indicates if the user is currently broadcasting video.
     afk: :class:`bool`
         Indicates if the user is currently in the AFK channel in the guild.
-    channel: :class:`VoiceChannel`
+    channel: Optional[:class:`VoiceChannel`]
         The voice channel that the user is currently connected to. None if the user
         is not currently in a voice channel.
     """
 
     __slots__ = ('session_id', 'deaf', 'mute', 'self_mute',
-                 'self_video', 'self_deaf', 'afk', 'channel')
+                 'self_stream', 'self_video', 'self_deaf', 'afk', 'channel')
 
     def __init__(self, *, data, channel=None):
         self.session_id = data.get('session_id')
@@ -69,6 +74,7 @@ class VoiceState:
     def _update(self, data, channel):
         self.self_mute = data.get('self_mute', False)
         self.self_deaf = data.get('self_deaf', False)
+        self.self_stream = data.get('self_stream', False)
         self.self_video = data.get('self_video', False)
         self.afk = data.get('suppress', False)
         self.mute = data.get('mute', False)
@@ -76,7 +82,7 @@ class VoiceState:
         self.channel = channel
 
     def __repr__(self):
-        return '<VoiceState self_mute={0.self_mute} self_deaf={0.self_deaf} self_video={0.self_video} channel={0.channel!r}>'.format(self)
+        return '<VoiceState self_mute={0.self_mute} self_deaf={0.self_deaf} self_stream={0.self_stream} channel={0.channel!r}>'.format(self)
 
 def flatten_user(cls):
     for attr, value in itertools.chain(BaseUser.__dict__.items(), User.__dict__.items()):
@@ -189,12 +195,19 @@ class Member(discord.abc.Messageable, _BaseUser):
     @classmethod
     def _from_message(cls, *, message, data):
         author = message.author
-        data['user'] = {
-            attr: getattr(author, attr)
-            for attr in author.__slots__
-            if attr[0] != '_'
-        }
+        data['user'] = author._to_minimal_user_json()
         return cls(data=data, guild=message.guild, state=message._state)
+
+    @classmethod
+    def _try_upgrade(cls, *,  data, guild, state):
+        # A User object with a 'member' key
+        try:
+            member_data = data.pop('member')
+        except KeyError:
+            return state.store_user(data)
+        else:
+            member_data['user'] = data
+            return cls(data=member_data, guild=guild, state=state)
 
     @classmethod
     def _from_presence_update(cls, *, data, guild, state):
@@ -425,7 +438,7 @@ class Member(discord.abc.Messageable, _BaseUser):
         administrator implication.
         """
 
-        if self.guild.owner == self:
+        if self.guild.owner_id == self.id:
             return Permissions.all()
 
         base = Permissions.none()

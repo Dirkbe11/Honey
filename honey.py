@@ -5,7 +5,7 @@ import asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from honey.sound.music import *
+from honey.audiocontroller import *
 ###########################
 #Func Init
 ###########################
@@ -26,5 +26,5 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"))
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
-bot.add_cog(Music(bot))
+bot.add_cog(AudioController(bot))
 bot.run(token)

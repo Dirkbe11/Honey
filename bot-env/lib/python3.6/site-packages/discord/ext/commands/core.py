@@ -148,6 +148,8 @@ class Command(_BaseCommand):
     parent: Optional[:class:`Command`]
         The parent command that this command belongs to. ``None`` if there
         isn't one.
+    cog: Optional[:class:`Cog`]
+        The cog that this command belongs to. ``None`` if there isn't one.
     checks: List[Callable[..., :class:`bool`]]
         A list of predicates that verifies if the command could be executed
         with the given :class:`.Context` as the sole parameter. If an exception
@@ -276,6 +278,40 @@ class Command(_BaseCommand):
             if value.annotation is converters.Greedy:
                 raise TypeError('Unparameterized Greedy[...] is disallowed in signature.')
 
+    def add_check(self, func):
+        """Adds a check to the command.
+
+        This is the non-decorator interface to :func:`.check`.
+
+        .. versionadded:: 1.3.0
+
+        Parameters
+        -----------
+        func
+            The function that will be used as a check.
+        """
+
+        self.checks.append(func)
+
+    def remove_check(self, func):
+        """Removes a check from the command.
+
+        This function is idempotent and will not raise an exception
+        if the function is not in the command's checks.
+
+        .. versionadded:: 1.3.0
+
+        Parameters
+        -----------
+        func
+            The function to remove from the checks.
+        """
+
+        try:
+            self.checks.remove(func)
+        except ValueError:
+            pass
+
     def update(self, **kwargs):
         """Updates :class:`Command` instance with updated attribute.
 
@@ -345,7 +381,7 @@ class Command(_BaseCommand):
             pass
         else:
             if module is not None and (module.startswith('discord.') and not module.endswith('converter')):
-                converter = getattr(converters, converter.__name__ + 'Converter')
+                converter = getattr(converters, converter.__name__ + 'Converter', converter)
 
         try:
             if inspect.isclass(converter):
@@ -1592,7 +1628,7 @@ def cooldown(rate, per, type=BucketType.default):
 
     A cooldown allows a command to only be used a specific amount
     of times in a specific time frame. These cooldowns can be based
-    either on a per-guild, per-channel, per-user, or global basis.
+    either on a per-guild, per-channel, per-user, per-role or global basis.
     Denoted by the third argument of ``type`` which must be of enum
     type ``BucketType`` which could be either:
 
@@ -1602,6 +1638,7 @@ def cooldown(rate, per, type=BucketType.default):
     - ``BucketType.channel`` for a per-channel basis.
     - ``BucketType.member`` for a per-member basis.
     - ``BucketType.category`` for a per-category basis.
+    - ``BucketType.role`` for a per-role basis (added in v1.3.0).
 
     If a cooldown is triggered, then :exc:`.CommandOnCooldown` is triggered in
     :func:`.on_command_error` and the local error handler.
