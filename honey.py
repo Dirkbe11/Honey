@@ -1,13 +1,13 @@
 #honey_bot.py
 import os
 import asyncio
-
+import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
 from honey.audiocontroller import *
 ###########################
-#Func Init
+#Honey Init
 ###########################
 load_dotenv()
 
@@ -26,5 +26,8 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"))
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
+if not discord.opus.is_loaded():   
+    discord.opus.load_opus('libopus.so.0')
+    
 bot.add_cog(AudioController(bot))
 bot.run(token)

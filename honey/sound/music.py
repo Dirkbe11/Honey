@@ -12,15 +12,7 @@ class Music():
         self.bot = bot 
         self.song_lock = asyncio.Lock()
         self.song_queue = Queue(bot)
-
-
-    #Join: Joins the voice channel
-    async def join(self, ctx, channel: discord.VoiceChannel):
-        if ctx.voice_client is not None:
-            return await ctx.voice_client.move_to(channel)
         
-        await channel.connect()
-
 
     #check_queue: Continously plays songs until the music queue is empty
     async def check_queue(self, ctx):
