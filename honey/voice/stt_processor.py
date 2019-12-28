@@ -2,6 +2,8 @@ import numpy as np
 import deepspeech as ds
 
 from timeit import default_timer as timer
+from .text_processor import *
+
 class STTProcesser():
     def __init__(self):
         self.LM_WEIGHT = .75#1.5
@@ -31,7 +33,16 @@ class STTProcesser():
         desired_sample_rate = self.model.sampleRate()
         print("DESIRED RATE: {}".format(desired_sample_rate))
 
-    def Process(self, data):
-        print("processing text!")
-        print(self.model.stt(data))
-        print("should have processed")
+        self.text_processor = TextProcessor()
+
+    def ProcessSpeech(self, user, data):
+        
+        print("Processing audio")
+        text = self.model.stt(data)
+        
+        print("Done Processing audio")
+        #deepspeech is interpreting silence as "i ", so ignore it
+        #this could be bad since
+        #need to search for empty spaces when we first get the pcm packet
+        if text != "i " and text != "i" and text != "it" and text != "it ":
+            self.text_processor.Process(user, text)

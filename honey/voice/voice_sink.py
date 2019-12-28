@@ -4,6 +4,7 @@ import discord
 import numpy as np
 import audioop
 
+from discord.rtp import SilencePacket
 from .stt_processor import STTProcesser
 
 class VoiceSink(discord.reader.AudioSink):
@@ -26,22 +27,23 @@ class VoiceSink(discord.reader.AudioSink):
         self.stt_processor = STTProcesser()
 
         self.actionflag = True
+        self.num = 0
+    
+    def write(self, packet):
+        #filter silence packets
 
-    #append data to the byte array buffer
-    def write(self, data):
-        # print("packet: {}".format(data.packet))
-        # voice_data = np.frombuffer(data.data, np.int16)
-        # self.stt_processor.Process(voice_data)
-        
-        if len(self.byte_array_buffer) > 960000  and self.actionflag:
-            data = audioop.ratecv(self.byte_array_buffer, 2, 2, 48000, 16000, None)
-            data = audioop.tomono(data[0], 2, 1, 0)
-            # print("DATA: {}".format(data))
-            voice_data = np.fromstring(data, np.int16)
-            self.stt_processor.Process(voice_data)
-            self.actionflag = False
-        if self.actionflag:
-            self.byte_array_buffer += data.data
+        if not type(packet.packet) is SilencePacket:
+            print(self.num)
+            self.num = self.num + 1
+            self.byte_array_buffer += packet.data
+
+            if len(self.byte_array_buffer) > 550000:
+                data = audioop.ratecv(self.byte_array_buffer, 2, 2, 48000, 16000, None)
+                data = audioop.tomono(data[0], 2, 1, 0)
+                voice_data = np.fromstring(data, np.int16)
+                # self.stt_processor.ProcessSpeech(packet.user.id, voice_data)
+                self.byte_array_buffer.clear()
+
 
     def cutbuffer(self, idx):
         self.byte_array_buffer = self.byte_array_buffer[idx:]
