@@ -5,28 +5,36 @@ ___
 
 **Installing Dependencies:**
 ---
-1. *Python*
+
+To use Honey, please ensure you have done the following:
+
+1. *Installed Python*
 	* Python version 3.5.3+ required
 
-2. *discord.py*
+2. *Activate the virtual environment*
 
-	* 1.) First Way (Recommended): python virtual environment
 
-		* Honey has a python virtual-environment that allows for easy dependency handling. To use, simple navigate to Honey's root directory and run:
+	* 1.) Honey has a python virtual-environment that allows for easy dependency handling. To use, simple navigate to Honey's root directory and run:
 
 			`source bot-env/bin/activate`
-
-	* 2.) Second Way: Installing discord yourself:
-
-			`python3 -m pip install -U discord.py[voice]`
 	
-	[discord.py intro:](https://discordpy.readthedocs.io/en/latest/intro.html)
 
-3. *Discord voice requires the following:*
+3. *Installed the following:*
 	* libffi
 	* libnacl
 	* python3-dev
+	* libopus
 
-	These can be obtained by running the following:
+	On Ubuntu, these can be obtained by running the following:
 
-		`apt install libffi-dev libnacl-dev python3-dev`
+		`apt install libffi-dev libnacl-dev python3-dev libopus0`
+
+4. *Installed a Language Model:*
+	
+	* From the root directory, navigate to /honey/voice/
+	* Run the following 2 commands:
+
+		`curl -LO https://github.com/mozilla/DeepSpeech/releases/download/v0.6.0/deepspeech-0.6.0-models.tar.gz`
+		
+		`tar xvf deepspeech-0.6.0-models.tar.gz`
+
