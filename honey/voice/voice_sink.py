@@ -32,8 +32,6 @@ class VoiceSink(discord.reader.AudioSink):
     def write(self, packet):
         #filter silence packets
         if not type(packet.packet) is SilencePacket:
-            print(self.num)
-            self.num = self.num + 1
             self.byte_array_buffer += packet.data
 
             if len(self.byte_array_buffer) > 550000:

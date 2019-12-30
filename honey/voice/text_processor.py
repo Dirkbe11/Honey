@@ -19,7 +19,6 @@ class TextProcessor():
 
     #performs the actual processing/searching for user commands
     def ProcessText(self, user):
-        print("processText")
         potential_command = self.user_dictionary[user] #get candidate command from dictionary by user
         print("interesting...")
         command_start_index = potential_command.find("honey") #find first instance of "honey"
@@ -43,11 +42,10 @@ class TextProcessor():
         else: 
             print("NO HONEY")
             self.user_dictionary[user] = ""
-        
-        print("DONE")
 
     def ProcessCommand(self, command):
         #clean command
         command = command.lstrip()
+        
         print("FINAL: " + command)
         
