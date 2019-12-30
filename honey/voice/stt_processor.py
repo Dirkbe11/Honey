@@ -36,13 +36,5 @@ class STTProcesser():
         self.text_processor = TextProcessor()
 
     def ProcessSpeech(self, user, data):
-        
-        print("Processing audio")
         text = self.model.stt(data)
-        
-        print("Done Processing audio")
-        #deepspeech is interpreting silence as "i ", so ignore it
-        #this could be bad since
-        #need to search for empty spaces when we first get the pcm packet
-        if text != "i " and text != "i" and text != "it" and text != "it ":
-            self.text_processor.Process(user, text)
+        self.text_processor.Process(user, text)

@@ -31,7 +31,6 @@ class VoiceSink(discord.reader.AudioSink):
     
     def write(self, packet):
         #filter silence packets
-
         if not type(packet.packet) is SilencePacket:
             print(self.num)
             self.num = self.num + 1
@@ -41,21 +40,9 @@ class VoiceSink(discord.reader.AudioSink):
                 data = audioop.ratecv(self.byte_array_buffer, 2, 2, 48000, 16000, None)
                 data = audioop.tomono(data[0], 2, 1, 0)
                 voice_data = np.fromstring(data, np.int16)
-                # self.stt_processor.ProcessSpeech(packet.user.id, voice_data)
+                self.stt_processor.ProcessSpeech(packet.user.id, voice_data)
                 self.byte_array_buffer.clear()
 
 
     def cutbuffer(self, idx):
         self.byte_array_buffer = self.byte_array_buffer[idx:]
-
-
-        
-
-
-#GRAVEYARD:
-      # #will probably wanty to get rid of this
-        # self._file = wave.open('sound.wav', 'wb')
-        # self._file.setnchannels(2)
-        # self._file.setsampwidth(2)
-        # self._file.setframerate(48000)
-        # self.actionflag = True
