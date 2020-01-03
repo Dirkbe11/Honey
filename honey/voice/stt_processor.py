@@ -5,15 +5,12 @@ from timeit import default_timer as timer
 from .text_processor import *
 
 class STTProcesser():
-    def __init__(self):
+    def __init__(self, output_function):
         print("+Loading STT Processor...")
         load_start = timer()
         self.LM_WEIGHT = .75#1.5
         self.LM_INSERTION_BONUS = 1.85
-        self.VALID_WORD_COUNT_WEIGHT = 2.25
-        self.N_FEATURES = 26
-        self.N_CONTEXT = 9
-        self.BEAM_WIDTH = 500
+        self.BEAM_WIDTH = 1024
         self.model_path = "honey/voice/deepspeech-0.6.0-models/output_graph.pbmm"
         self.language_model_path = 'honey/voice/deepspeech-0.6.0-models/lm.binary'
         self.trie_path = 'honey/voice/deepspeech-0.6.0-models/trie'
@@ -23,7 +20,7 @@ class STTProcesser():
         #Add trie and language model to Model
         self.model.enableDecoderWithLM(self.language_model_path, self.trie_path, self.LM_WEIGHT, self.LM_INSERTION_BONUS)
 
-        self.text_processor = TextProcessor()
+        self.text_processor = TextProcessor(output_function)
 
         load_end = timer() - load_start
         print("STT Processor loaded in {}".format(load_end))

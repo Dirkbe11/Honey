@@ -1,10 +1,12 @@
 # **Honey**
+![honey](resources/images/HoneyLogo.png)
+
 *Voice Activated Discord Bot*
 ___
 
 
 **Installing Dependencies:**
----
+---/home/dirk/workspace/JamesDirkBell/resources/images/HoneyLogo.png
 
 To use Honey, please ensure you have done the following:
 
