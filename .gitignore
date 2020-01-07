@@ -1,3 +1,5 @@
 *~
 .env
 /honey/voice/deepspeech-0.6.0-models
+
+*.pyc
