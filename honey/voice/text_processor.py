@@ -4,40 +4,50 @@ class TextProcessor():
         self.user_dictionary = {}
         self.command_executer = output_function
 
-    #appends text to user specific strings, then calls process on it
-    def Process(self, user, text):
+    #clears text data from users cache
+    def clear_user_history(self, user):
+        self.user_dictionary[user] = ""
+
+    #appends text to user specific strings + searches for keyword HONEY
+    def process_initial(self, user, text):
         print("PRE: " + text)
-        print(len(text))
+        
         if not user in self.user_dictionary:
             self.user_dictionary[user] = text
         else:
             self.user_dictionary[user] += text
-        
-        self.ProcessText(user)
+
+        #find first instance of "honey"
+        command_start_index = self.user_dictionary[user].find("honey")
+
+        if command_start_index != -1:
+            return True
+        else:
+            if len(self.user_dictionary[user]) > 30:
+                self.clear_user_history(user)
+            return False
+
 
     #performs the actual processing/searching for user commands
-    def ProcessText(self, user):
-        potential_command = self.user_dictionary[user] #get candidate command from dictionary by user
-        print("interesting...")
-        command_start_index = potential_command.find("honey") #find first instance of "honey"
-        print("Potential Command: " + potential_command)
+    def ProcessText(self, text, user):
+        command_start_index = text.find("honey") #find first instance of "honey"
         if command_start_index != -1:
-            # print("honey found!")
-            self.user_dictionary[user] = self.user_dictionary[user][command_start_index:]
-            
-            if len(self.user_dictionary[user]) != 0:
-                command_end_index = self.user_dictionary[user].find("please")
+
+            text = text[command_start_index:]
+            if len(text) != 0:
+                command_end_index = text.find("please")
 
                 if command_end_index != -1:
-                    command = self.user_dictionary[user][5:command_end_index]
+                    command = text[5:command_end_index]
                     self.ProcessCommand(command)
-                    self.user_dictionary[user] = (self.user_dictionary[user][command_end_index+6:]).lstrip()
                     
-                elif len(self.user_dictionary[user]) > 30:
-                    self.user_dictionary[user] = ""
-                
-        else: 
-            self.user_dictionary[user] = ""
+        #             self.clear_user_history(user)
+        #         elif len(text) > 30:
+        #              self.clear_user_history(user)
+        #     else:
+        # else: 
+
+        self.clear_user_history(user)
 
     def ProcessCommand(self, command):
         #clean command

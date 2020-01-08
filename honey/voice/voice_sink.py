@@ -26,8 +26,7 @@ class VoiceSink(discord.reader.AudioSink):
                 self.user_data_buffer[packet.user][0] = 0
 
                 if(len(self.user_data_buffer[packet.user][1]) != 0):
-                    data = audioop.tomono(self.user_data_buffer[packet.user][1], 2, 1, 0)
-                    voice_data = np.fromstring(data, np.int16)[::3]
+                    voice_data = self.user_data_buffer[packet.user][1]
                     self.stt_processor.ProcessSpeech(packet.user.id, voice_data)
                     self.user_data_buffer[packet.user][1].clear()
 
