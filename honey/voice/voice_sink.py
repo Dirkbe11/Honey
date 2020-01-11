@@ -1,8 +1,6 @@
 import asyncio
 import wave
 import discord
-import numpy as np
-import audioop
 
 from discord.rtp import SilencePacket
 from .stt_processor import STTProcesser
@@ -14,6 +12,7 @@ class VoiceSink(discord.reader.AudioSink):
 
     def write(self, packet):
         #add new user
+
         if not (packet.user in self.user_data_buffer):
             self.user_data_buffer[packet.user] = [0, bytearray()]
             self.user_data_buffer[packet.user][1] += packet.data

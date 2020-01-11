@@ -14,9 +14,9 @@ class STTProcesser():
     def __init__(self, output_function):
         print("+Loading STT Processor...")
         load_start = timer()
-        self.LM_WEIGHT = .75#1.5
-        self.LM_INSERTION_BONUS = 1.85
-        self.BEAM_WIDTH = 1024
+        self.LM_WEIGHT = .25
+        self.LM_INSERTION_BONUS = 2.20
+        self.BEAM_WIDTH = 2048
         self.model_path = "honey/voice/deepspeech-0.6.0-models/output_graph.pbmm"
         self.language_model_path = 'honey/voice/deepspeech-0.6.0-models/lm.binary'
         self.trie_path = 'honey/voice/deepspeech-0.6.0-models/trie'
@@ -50,8 +50,9 @@ class STTProcesser():
     def ProcessSpeech(self, user, data):
         
         #prep data
-        mono_data = audioop.tomono(data, 2, 1, 0)
-        voice_data = np.fromstring(mono_data, np.int16)[::3]
+        reduced_sample_ratedata = audioop.ratecv(data, 2, 2, 48000, 16000, None)
+        mono_data = audioop.tomono(reduced_sample_ratedata[0], 2, 1, 0)
+        voice_data = np.fromstring(mono_data, np.int16)
 
         #run initial deepspeech conversion
         text = self.model.stt(voice_data)
@@ -60,13 +61,15 @@ class STTProcesser():
         honey_activated = self.text_processor.process_initial(user, text)
 
         if(honey_activated == True and len(text) > 12):
-            print("Honey, found")
-            audio = types.RecognitionAudio(content=mono_data)
-            candidate_command = self.google_stt_client.recognize(config=self.config, audio=audio)
-            print("\n\nGOOGLE: {}\n\n".format(candidate_command))
-            print("TRANSCRIPT: {}".format(candidate_command.results[0].alternatives[0].transcript))
-            print("confidence: {}".format(candidate_command.results[0].alternatives[0].confidence))
+            print("HONEY FOUND")
+            # print("Honey, found")
+            # print("text: {}".format(text))
+            # audio = types.RecognitionAudio(content=mono_data)
+            # candidate_command = self.google_stt_client.recognize(config=self.config, audio=audio)
+            # print("\n\nGOOGLE: {}\n\n".format(candidate_command))
+            # print("TRANSCRIPT: {}".format(candidate_command.results[0].alternatives[0].transcript))
+            # print("confidence: {}".format(candidate_command.results[0].alternatives[0].confidence))
            
-            self.text_processor.ProcessText(candidate_command.results[0].alternatives[0].transcript.lower(), user)
+            # self.text_processor.ProcessText(candidate_command.results[0].alternatives[0].transcript.lower(), user)
 
 

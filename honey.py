@@ -28,6 +28,7 @@ async def on_ready():
 
 if not discord.opus.is_loaded():   
     discord.opus.load_opus('libopus.so.0')
-    
+
+bot.remove_command("help")
 bot.add_cog(AudioController(bot))
 bot.run(token)
