@@ -3,5 +3,6 @@
 /honey/voice/deepspeech-0.6.0-models
 /key/
 *.pyc
-/bot-env/
+/honey-bot/
 /bot-env-copy/
+/errors/

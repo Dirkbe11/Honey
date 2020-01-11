@@ -19,6 +19,7 @@ class VoiceSink(discord.reader.AudioSink):
 
         if not (type(packet.packet) is SilencePacket) and len(self.user_data_buffer[packet.user][1]) < 3000000:
             self.user_data_buffer[packet.user][1] += packet.data
+            self.user_data_buffer[packet.user][0] = 0
         else:
             self.user_data_buffer[packet.user][0] += 1
             if self.user_data_buffer[packet.user][0] > 50:
