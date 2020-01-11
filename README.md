@@ -10,18 +10,19 @@ ___
 
 To use Honey, please ensure you have done the following:
 
-1. *Installed Python*
+1. *Verify correct Python version:*
 	* Python version 3.5.3+ required
 
-2. *Activate the virtual environment*
+2. *create & activate a virtual-environment:*
 
+			`python3 -m venv honey-bot`
+			`source honey-bot/bin/activate`
 
-	* 1.) Honey has a python virtual-environment that allows for easy dependency handling. To use, simple navigate to Honey's root directory and run:
-
-			`source bot-env/bin/activate`
+3. *Install requirements via the requirements file:*
 	
+			`pip3 install -r requirements.txt`
 
-3. *Installed the following:*
+4. *Installed the following:*
 	* libffi
 	* libnacl
 	* python3-dev
@@ -31,7 +32,7 @@ To use Honey, please ensure you have done the following:
 
 		`apt install libffi-dev libnacl-dev python3-dev libopus0`
 
-4. *Installed a Language Model:*
+5. *Installed a Language Model:*
 	
 	* From the root directory, navigate to /honey/voice/
 	* Run the following 2 commands:

@@ -4,3 +4,4 @@
 /key/
 *.pyc
 /bot-env/
+/bot-env-copy/
