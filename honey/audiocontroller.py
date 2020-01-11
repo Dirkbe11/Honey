@@ -95,6 +95,11 @@ class AudioController(commands.Cog):
         
         if(command.startswith('help')):
             asyncio.run_coroutine_threadsafe(self._help_voice_command(), loop)
+
+        if(command.startswith('EE1')):
+            print("suit")
+            asyncio.run_coroutine_threadsafe(self.music.play(self.voice_ctx, "https://www.youtube.com/watch?v=x2qRDMHbXaM"), loop)
+        
         
     #==============================================
     #Internal Use Functions

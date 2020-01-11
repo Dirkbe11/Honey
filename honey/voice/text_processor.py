@@ -30,6 +30,11 @@ class TextProcessor():
 
     #performs the actual processing/searching for user commands
     def ProcessText(self, text, user):
+        if(text.startswith("honey where is my super suit") or text.startswith("honey where is my supersuit")):
+            self.ProcessCommand("EE1")
+            self.clear_user_history(user)
+            return
+
         command_start_index = text.find("honey") #find first instance of "honey"
         if command_start_index != -1:
 
@@ -40,7 +45,6 @@ class TextProcessor():
                 if command_end_index != -1:
                     command = text[5:command_end_index]
                     self.ProcessCommand(command)
-                    
         #             self.clear_user_history(user)
         #         elif len(text) > 30:
         #              self.clear_user_history(user)
