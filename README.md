@@ -41,3 +41,17 @@ To use Honey, please ensure you have done the following:
 		
 		`tar xvf deepspeech-0.6.0-models.tar.gz`
 
+5. *Setup Bot-token and Google STT key:*
+
+	* Verify that your Google speech-to-text certification is valid...
+
+			`export GOOGLE_APPLICATION_CREDENTIALS="path to json cert"`
+	
+	* Create a .env file for your bot-token...
+			
+			`emacs .env`
+			
+			Paste the following:
+
+			# .env
+			DISCORD_TOKEN="your bots token"
