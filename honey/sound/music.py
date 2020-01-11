@@ -75,6 +75,11 @@ class Music():
     async def stop(self, ctx):
         await self.song_queue.clear(ctx)
 
+    #skips current song
+    async def skip(self, ctx):
+        with await self.song_lock:
+            if ctx.voice_client.is_playing():
+                ctx.voice_client.stop()
 
                 
 
