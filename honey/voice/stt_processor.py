@@ -62,14 +62,15 @@ class STTProcesser():
 
         if(honey_activated == True and len(text) > 12):
             print("HONEY FOUND")
-            # print("Honey, found")
-            # print("text: {}".format(text))
-            # audio = types.RecognitionAudio(content=mono_data)
-            # candidate_command = self.google_stt_client.recognize(config=self.config, audio=audio)
-            # print("\n\nGOOGLE: {}\n\n".format(candidate_command))
-            # print("TRANSCRIPT: {}".format(candidate_command.results[0].alternatives[0].transcript))
-            # print("confidence: {}".format(candidate_command.results[0].alternatives[0].confidence))
+            print("text: {}".format(text))
+            google_mono_data = audioop.tomono(data, 2, 1, 0)
+            audio = types.RecognitionAudio(content=google_mono_data)
+            print("audio")
+            candidate_command = self.google_stt_client.recognize(config=self.config, audio=audio)
+            print("\n\nGOOGLE: {}\n\n".format(candidate_command))
+            print("TRANSCRIPT: {}".format(candidate_command.results[0].alternatives[0].transcript))
+            print("confidence: {}".format(candidate_command.results[0].alternatives[0].confidence))
            
-            # self.text_processor.ProcessText(candidate_command.results[0].alternatives[0].transcript.lower(), user)
+            self.text_processor.ProcessText(candidate_command.results[0].alternatives[0].transcript.lower(), user)
 
 

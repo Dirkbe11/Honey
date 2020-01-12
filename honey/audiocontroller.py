@@ -62,12 +62,6 @@ class AudioController(commands.Cog):
         await self.music.stop(ctx)
         await ctx.voice_client.disconnect()
 
-        try:
-            self.voice_ctx.voice_client.stop_listening()
-            self.voice_ctx = None
-        except:
-            pass
-
     #ensure_voice: Decorator for the 'play' command
     #If the command author is in a voice channel, then we join it
     @play.before_invoke
@@ -99,8 +93,13 @@ class AudioController(commands.Cog):
         if(command.startswith('skip')):
             asyncio.run_coroutine_threadsafe(self.music.skip(self.voice_ctx), loop)
         
-        if(command.statswith('help')):
+        if(command.startswith('help')):
             asyncio.run_coroutine_threadsafe(self._help_voice_command(), loop)
+
+        if(command.startswith('EE1')):
+            print("suit")
+            asyncio.run_coroutine_threadsafe(self.music.play(self.voice_ctx, "https://www.youtube.com/watch?v=x2qRDMHbXaM"), loop)
+        
         
     #==============================================
     #Internal Use Functions
@@ -110,11 +109,11 @@ class AudioController(commands.Cog):
         await self.music.stop(self.voice_ctx)
         await self.voice_ctx.voice_client.disconnect()
 
-        try:
-            self.voice_ctx.voice_client.stop_listening()
-            self.voice_ctx = None
-        except:
-            pass
+        # try:
+        #     self.voice_ctx.voice_client.stop_listening()
+        #     self.voice_ctx = None
+        # except:
+        #     pass
     
     async def _help_voice_command(self):
         await self.voice_ctx.send(help_command)
