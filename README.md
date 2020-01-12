@@ -30,7 +30,7 @@ To use Honey, please ensure you have done the following:
 
 	On Ubuntu, these can be obtained by running the following:
 
-		`apt install libffi-dev libnacl-dev python3-dev libopus0`
+		`apt install libffi-dev libnacl-dev python3-dev libopus0 ffmpeg`
 
 5. *Installed a Language Model:*
 	
