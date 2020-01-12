@@ -22,7 +22,7 @@ class VoiceSink(discord.reader.AudioSink):
             self.user_data_buffer[packet.user][0] = 0
         else:
             self.user_data_buffer[packet.user][0] += 1
-            if self.user_data_buffer[packet.user][0] > 25:
+            if self.user_data_buffer[packet.user][0] > 25 and (len(self.user_data_buffer[packet.user][1]) > 150000):
                 self.user_data_buffer[packet.user][0] = 0
 
                 if(len(self.user_data_buffer[packet.user][1]) != 0):
