@@ -6,7 +6,7 @@ ___
 
 
 **Installing Dependencies:**
----/home/dirk/workspace/JamesDirkBell/resources/images/HoneyLogo.png
+---
 
 To use Honey, please ensure you have done the following:
 
